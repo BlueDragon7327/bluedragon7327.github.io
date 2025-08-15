@@ -391,6 +391,74 @@
             margin-bottom: 30px;
         }
         
+        /* small social icon row that inherits theme */
+        .social-icons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+
+        .social-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border: 1px solid rgba(114,137,218,0.12);
+            background: linear-gradient(45deg, rgba(114,137,218,0.12), rgba(88,101,242,0.08));
+            color: #e6eefc;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(114,137,218,0.14);
+        }
+        
+        /* logo image sizing (uses remote SVGs) */
+        .social-btn img {
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+
+        /* Search bar for projects */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 700px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(47,49,54,0.9);
+            color: #fff;
+            border: 1px solid rgba(114,137,218,0.12);
+            outline: none;
+            font-size: 1rem;
+            box-shadow: none;
+        }
+
+        .search-input::placeholder {
+            color: #9aa0a6;
+        }
+
+        /* contact grid uses same card style as projects */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
         /* Animations */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
@@ -471,8 +539,22 @@
                     <button class="btn" onclick="showProjects()">
                         🚀 View Projects
                     </button>
-                    <a href="#" class="btn btn-secondary">
+                    <a href="javascript:void(0)" class="btn btn-secondary" onclick="showContact()">
                         💬 Get In Touch
+                    </a>
+                </div>
+
+                <!-- small social icons row -->
+                <div class="social-icons" aria-label="social links">
+                    <a class="social-btn" href="https://github.com/BlueDragon7327" target="_blank" rel="noopener noreferrer" title="GitHub">
+                        <img src="https://cdn.simpleicons.org/github/FFFFFF" alt="GitHub">
+                    </a>
+                    <a class="social-btn" href="https://discord.com/users/1152384165573034084
+" target="_blank" rel="noopener noreferrer" title="Discord">
+                        <img src="https://cdn.simpleicons.org/discord/FFFFFF" alt="Discord">
+                    </a>
+                    <a class="social-btn" href="https://youtube.com/@bluedragon7327" target="_blank" rel="noopener noreferrer" title="YouTube">
+                        <img src="https://cdn.simpleicons.org/youtube/FFFFFF" alt="YouTube">
                     </a>
                 </div>
             </div>
@@ -488,8 +570,13 @@
                 <h1>My Projects</h1>
                 <p class="subtitle">cool stuffs i made</p>
             </div>
+
+            <!-- Search bar to filter visible projects -->
+            <div class="search-bar">
+                <input id="project-search" class="search-input" type="search" placeholder="Search projects — try names, descriptions, or tech..." aria-label="Search projects">
+            </div>
             
-            <div class="projects-grid">
+            <div class="projects-grid" id="projects-grid">
                 <div class="project-card">
                     <h3 class="project-title">⬛ BlonkAI</h3>
                     <p class="project-description">
@@ -551,6 +638,47 @@
                 
             </div>
         </div>
+
+        <!-- Contact Page (new) -->
+        <div id="contact-page" class="projects-page">
+            <button class="btn back-btn" onclick="showMain()">
+                ← Back to Profile
+            </button>
+            
+            <div class="header">
+                <h1>Contact Me</h1>
+                <p class="subtitle">ways to reach out</p>
+            </div>
+
+            <div class="contact-grid">
+                <div class="project-card">
+                    <h3 class="project-title">Email</h3>
+                    <p class="project-description">bluedragon@bluedragon.dev</p>
+                    <div class="project-links">
+                        <a href="mailto:bluedragon@bluedragon.dev" class="project-link">Send Email</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">Discord</h3>
+                    <p class="project-description">BlueDragon#7327</p>
+                    <div class="project-links">
+                        <a href="https://discord.com/users/1152384165573034084
+" class="project-link" target="_blank">Add on Discord</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">GitHub</h3>
+                    <p class="project-description">github.com/BlueDragon7327</p>
+                    <div class="project-links">
+                        <a href="https://github.com/BlueDragon7327" class="project-link" target="_blank">View Profile</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script>
@@ -567,20 +695,45 @@
             }
         }
         
-        // Navigation functions
+        // Navigation functions (updated to handle contact page)
         function showProjects() {
             document.getElementById('main-page').style.display = 'none';
+            document.getElementById('contact-page').classList.remove('active');
             document.getElementById('projects-page').classList.add('active');
             window.scrollTo(0, 0);
         }
         
         function showMain() {
             document.getElementById('projects-page').classList.remove('active');
+            document.getElementById('contact-page').classList.remove('active');
             document.getElementById('main-page').style.display = 'block';
             window.scrollTo(0, 0);
         }
-        
-        // Add some interactive effects
+
+        function showContact() {
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('projects-page').classList.remove('active');
+            document.getElementById('contact-page').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Project search/filtering
+        function filterProjects(query) {
+            const q = query.trim().toLowerCase();
+            const cards = document.querySelectorAll('#projects-grid .project-card');
+            cards.forEach(card => {
+                const title = (card.querySelector('.project-title') || { innerText: '' }).innerText.toLowerCase();
+                const desc = (card.querySelector('.project-description') || { innerText: '' }).innerText.toLowerCase();
+                const links = Array.from(card.querySelectorAll('.project-link')).map(a => a.innerText.toLowerCase()).join(' ');
+                const combined = title + ' ' + desc + ' ' + links;
+                if (!q || combined.includes(q)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             
@@ -616,6 +769,26 @@
                     }, 600);
                 });
             });
+
+            // wire up search input
+            const searchInput = document.getElementById('project-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    filterProjects(e.target.value);
+                });
+                // optional: clear filter when leaving projects view
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        e.target.value = '';
+                        filterProjects('');
+                    }
+                });
+            }
+
+            // ensure initial state shows main page only
+            document.getElementById('main-page').style.display = 'block';
+            document.getElementById('projects-page').classList.remove('active');
+            document.getElementById('contact-page').classList.remove('active');
         });
         
         // Add ripple animation
