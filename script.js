@@ -1,4 +1,18 @@
 let hasUserInteracted = false;
+let audioContext = null;
+
+// Create or resume audio context for mobile
+function initAudioContext() {
+  if (!audioContext) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+      audioContext = new AudioContext();
+    }
+  }
+  if (audioContext && audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+}
 
 function initMedia() {
   console.log("initMedia called");
@@ -13,6 +27,7 @@ function initMedia() {
   try {
     backgroundMusic.muted = true;
     backgroundMusic.preload = 'auto';
+    backgroundMusic.load(); // Force load on mobile
     backgroundMusic.play().then(() => {
       console.log('Background music preloaded and playing muted');
     }).catch(err => {
@@ -124,11 +139,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   startScreen.addEventListener('click', () => {
+    initAudioContext(); // Initialize audio context on user interaction
     startScreen.classList.add('hidden');
     backgroundMusic.muted = false;
-    backgroundMusic.play().catch(err => {
-      console.error("Failed to play music after start screen click:", err);
-    });
+    backgroundMusic.volume = 0.3; // Ensure volume is set
+    // Force play with promise handling for mobile
+    const playPromise = backgroundMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        console.log("Music started playing successfully");
+      }).catch(err => {
+        console.error("Failed to play music after start screen click:", err);
+        // Retry after a short delay for mobile
+        setTimeout(() => {
+          backgroundMusic.play().catch(e => console.error("Retry failed:", e));
+        }, 100);
+      });
+    }
     profileBlock.classList.remove('hidden');
     gsap.fromTo(profileBlock,
       { opacity: 0, y: -50 },
@@ -156,11 +183,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   startScreen.addEventListener('touchstart', (e) => {
     e.preventDefault();
+    initAudioContext(); // Initialize audio context on user interaction
     startScreen.classList.add('hidden');
     backgroundMusic.muted = false;
-    backgroundMusic.play().catch(err => {
-      console.error("Failed to play music after start screen touch:", err);
-    });
+    backgroundMusic.volume = 0.3; // Ensure volume is set
+    // Force play with promise handling for mobile
+    const playPromise = backgroundMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        console.log("Music started playing successfully on touch");
+      }).catch(err => {
+        console.error("Failed to play music after start screen touch:", err);
+        // Retry after a short delay for mobile
+        setTimeout(() => {
+          backgroundMusic.play().catch(e => console.error("Retry failed:", e));
+        }, 100);
+      });
+    }
     profileBlock.classList.remove('hidden');
     gsap.fromTo(profileBlock,
       { opacity: 0, y: -50 },
@@ -252,8 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   const bioMessages = [
-    "this source pre fire ngl ---!!!",
-    "\"Hello, World!\""
+    "i like coding dumb stuff and making videos about it :)"
   ];
   // Typing removed — display first bio message statically
   profileBio.textContent = bioMessages[0];
@@ -613,5 +651,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   typeWriterStart();
-
 });
