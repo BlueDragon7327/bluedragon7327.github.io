@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Show static profile content (typing removed)
     profileName.textContent = "𝓑𝓵𝓾𝓮𝓓𝓻𝓸𝓰𝓸𝓫";
-    profileBio.textContent = "this source pre fire ngl ---!!!";
+    profileBio.textContent = "i like coding dumb stuff and making videos about it :)";
   });
 
   // LTC copy handler
@@ -613,4 +613,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   typeWriterStart();
+
 });
